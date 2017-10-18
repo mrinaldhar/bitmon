@@ -1,0 +1,100 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>
+		BitMon
+	</title>
+	<link rel="stylesheet" href="./css/reset.css" />
+	<link rel="stylesheet" href="./css/animate.css" />
+	<link rel="stylesheet" href="./morris.css" />
+	<style>
+		@font-face {
+			src: url("./fonts/exo.otf");
+			font-family: exo;
+		}
+		body, html {
+			font-family: neue;
+			-webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			  background-color: rgba(0,0,0,1);
+		}
+		h1, h2, h3, h4 {
+			font-weight: normal;
+		}
+		.anim {
+		  -o-transition:.5s;
+		  -ms-transition:.5s;
+		  -moz-transition:.5s;
+		  -webkit-transition:.5s;
+		  transition:.5s;
+		}
+		#chart {
+			height: 80vh;
+			width: 100%;
+			padding: 50px;
+			box-sizing: border-box;
+		}
+		#trend {
+			font-size: 3em;
+			color: white;
+			width: 100%;
+			text-align: center;
+			font-family: exo;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<div class="logo_hero"><h1></h1></div>
+		<ul class="nav">
+
+		</ul>
+	</div>
+	<div id="container">
+		<div id="chart"></div>
+		<div id="trend"></div>
+	</div>
+
+</body>
+<script src="./js/jquery.js"></script>
+<script src="./morris.min.js"></script>
+<script src="./raphael.js"></script>
+<script>
+$(document).ready(function() {
+	window.trend = "";
+	$.ajax({
+		url: "./bitcoin.log",
+		method: "GET",
+		success: function(data) {
+			console.log(data);
+			data = data.split('\n');
+			var chart_data = [];
+			var prevVal = 0;
+			var currVal = 0;
+			$.each(data, function(index, value) {
+				console.log(value);
+				if (value.split(",").length > 1) {
+					chart_data.push({y: value.split(",")[0], buy: value.split(",")[1], sell: value.split(",")[2]});
+					currVal = value.split(",")[1];
+					if (currVal > prevVal && prevVal != 0) {
+						$('#trend').text("Trend: Increasing!");
+					}
+					else {
+						$('#trend').text("Trend: Decreasing!");
+					}
+				}
+			})
+			Morris.Line({
+			  element: 'chart',
+			  data: chart_data,
+			  xkey: 'y',
+			  ykeys: ['buy', 'sell'],
+			  labels: ['Buy', 'Sell']
+			});
+		} 
+	});
+});
+</script>
+<!-- <script src="./js/jqueryui.js"></script> -->
+</html>
