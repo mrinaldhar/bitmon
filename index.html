@@ -10,11 +10,11 @@
 	<link rel="stylesheet" href="./morris.css" />
 	<style>
 		@font-face {
-			src: url("./fonts/exo.otf");
-			font-family: exo;
+			src: url("./fonts/gotham.ttf");
+			font-family: gotham;
 		}
 		body, html {
-			font-family: neue;
+			font-family: gotham;
 			-webkit-font-smoothing: antialiased;
 			  -moz-osx-font-smoothing: grayscale;
 			  background-color: rgba(0,0,0,1);
@@ -40,7 +40,16 @@
 			color: white;
 			width: 100%;
 			text-align: center;
-			font-family: exo;
+			font-family: gotham;
+			text-transform: uppercase;
+		}
+			  lineColors: ["#F44336", "#4CAF50"]
+
+		.red {
+			color: #F44336;
+		}
+		.green {
+			color: #4CAF50;
 		}
 	</style>
 </head>
@@ -78,10 +87,21 @@ $(document).ready(function() {
 					chart_data.push({y: value.split(",")[0], buy: value.split(",")[1], sell: value.split(",")[2]});
 					currVal = value.split(",")[1];
 					if (currVal > prevVal && prevVal != 0) {
-						$('#trend').text("Trend: Increasing!");
+						$('#trend').text("Increase: "+(currVal-prevVal));
+						$('#trend').addClass("green");
+						$('#trend').removeClass("red");
+						prevVal = currVal;
+					}
+					else if (currVal < prevVal && prevVal != 0) {
+						$('#trend').text("Decrease: "+(prevVal - currVal));
+						$('#trend').removeClass("green");
+						$('#trend').addClass("red");
+						prevVal = currVal;
 					}
 					else {
-						$('#trend').text("Trend: Decreasing!");
+						$('#trend').text("Constant");
+						$('#trend').removeClass("green");
+						$('#trend').removeClass("red");
 					}
 				}
 			})
@@ -92,7 +112,8 @@ $(document).ready(function() {
 			  ykeys: ['buy', 'sell'],
 			  labels: ['Buy', 'Sell'],
 			  pointSize: 1,
-			  pointFillColors: ["#FFFFFF", "#FFFFFF"]
+			  pointStrokeColors: ["#F44336", "#4CAF50"],
+			  lineColors: ["#F44336", "#4CAF50"]
 			});
 		} 
 	});
